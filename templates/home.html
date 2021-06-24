@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Movie Recommender Projects</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap.min.css') }}">
+    <script src="{{ url_for('static',filename='jquery.min.js') }}"></script>
+
+    <style>
+		.radio-inline+.radio-inline{margin:0px;}
+		img.img_postar{width:220px;height:252px;margin-top:1px;border:1px solid #FF0000;}
+		.badge{padding:6px 8px;}
+		.odd{background:#3579bd !important;}
+		.label_genres .odd{background:#1a4c7f !important;}
+		.label_genres .even{background:#0a6a08 !important;}
+		.label_overview{font-size: 15px;font-style: italic;text-align: justify;padding:12px 5px;height:155px;overflow:auto;display:block;}
+
+		#div_load_submitted_movie .block{ max-height:260px; }
+		#div_load_submitted_movie .block img{width:220px;height:252px;margin-top:1px;border:1px solid #FF0000;}
+		#div_load_submitted_movie .block h4{margin:8px 0px 0px 0px;}
+    </style>
+
+  </head>
+  <body>
+    <header style="background:#ABCDEF;margin:0px;padding:2px 0px;">
+      <h2 align="center">Movie Recommendation&nbsp;&nbsp;<span class = 'badge odd'>Please Rate 4 Movies for a Recommendation</span></h2>
+    </header>
+
+    <div class="container">
+		<div class="row" style="height:256px;">
+			<div class="col-sm-3">
+				<img class="img_postar" src="">
+			</div>
+			<div class="col-sm-9">
+				<div class="row">
+					<div class="col-sm-12">
+						<h2 class="alert alert-success" style="margin:0px;"><span class="label_title"></span></h2>
+					</div>
+					<div class="col-sm-6">
+						<h4>Genres&nbsp;&nbsp;<span class="label_genres"></span></h4>
+						<div class="row">
+							<div class="col-sm-6" id="div_runtime">
+								<label>Runtime:&nbsp;&nbsp;<span class="btn btn-primary label_runtime">-</span></label>
+							</div>
+							<div class="col-sm-6">
+								<label>Overall Rating:&nbsp;&nbsp;<span class="btn btn-success label_ratings">-</span></label>
+							</div>
+						</div>
+						<div style="margin:5px 0px;height:2px;background:#e36767"></div>
+						<!-- input '- submit -->
+						<div class="row" id="div_range_slider">
+							<label class="col-sm-4 control-label">Rate this Movie</label>
+							<label class="col-sm-2 text-right control-label label_range pull-right">0</label>
+							<div class="col-sm-12">
+								<input type="range" class="form-control" id="movie_points" min="0" max="10" step=".5" value="0" onchange="$('.label_range').text($(this).val())">
+							</div>
+						</div>
+						<div class="row" align="center">
+							<button type="button" class="btn btn-sm btn-primary btn-submit" onclick="fn_submit_nchoice()">Submit</button>
+							
+							<button type="button" class="btn btn-sm btn-warning btn-reload hide" onclick="location.reload();">Reload</button>
+							
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<strong>Overview</strong>
+						<span class="label_overview"></span>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<div style="background: aqua;height:2px;"></div>
+		<div class="row" id="div_load_submitted_movie" style="height:300px;">
+
+
+		</div>
+	</div>
+	<br>
+	<div style="background:#333;height:15px;"></div>
+	
+
+    <div id="div_choose_modal" class="modal" tabindex="-1" data-backdrop="static" data-keyboard="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>
+            <h4 class="modal-title">Explore your choice (Optional)</h4>
+          </div>
+          <div class="modal-body">
+				<div class="form-group row genres">
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Action">&nbsp;Action
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Adventure">&nbsp;Adventure
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Animation">&nbsp;Animation
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Comedy">&nbsp;Comedy
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Crime">&nbsp;Crime
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Drama">&nbsp;Drama
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Family">&nbsp;Family
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Fantasy">&nbsp;Fantasy
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="History">&nbsp;History
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Horror">&nbsp;Horror
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Mystery">&nbsp;Mystery
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Romance">&nbsp;Romance
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Science Fiction">&nbsp;Science Fiction
+					</label>
+					<label class="radio-inline col-xs-4">
+						<input type="checkbox" value="Thriller">&nbsp;Thriller
+					</label>
+
+				</div>
+				
+		  </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-sm btn-success" onclick="fn_submit_choice()">Submit</button>
+          </div>
+        </div>
+      </div>
+	</div>
+	
+	<div id="loading_modal" class="modal" tabindex="-1" data-backdrop="static" data-keyboard="true">
+		<div class="modal-dialog">
+			<div class="modal-content" style="background:transparent;">
+			<div class="modal-body" style='padding:0px;min-height:280px;' align='center'><img src="{{ url_for('static',filename='loading.gif') }}" style='margin:0px auto;'></div>
+			</div>
+		</div>
+	</div>
+
+  </body>
+  <script src="{{ url_for('static',filename='bootstrap.min.js') }}"></script>
+</html>
+
+
+<script>
+	var poster_path="",img_load_try=0,skip_rows="0",submit_pick=1;
+	var genre_arr=["Action","Adventure","Animation","Comedy","Crime","Drama","Family","Fantasy","History","Horror","Mystery","Romance","Science Fiction","Thriller"];
+	var genre_val=[0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	var rating_arr=[0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	var last_rating=5;
+
+	sessionStorage.setItem("usr_rating",5);
+
+	$(document).ready(function(){
+		$('#div_choose_modal').modal();
+	});
+	function fn_submit_choice(){
+		var genres="";
+		$('.genres').find('input[type=checkbox]').each(function(i,e){
+			if($(e).is(':checked'))
+				genres += ((genres!="")?",":"")+$(e).val();
+		});
+
+		sessionStorage.setItem("def_category",genres);
+		sessionStorage.setItem("def_rating",5);
+
+		load_movie();
+	}
+	function load_movie(){
+		$('.label_title').html('');
+		$('.label_genres').html('');
+		$('.label_overview').html('');
+		$('.label_runtime').html('-');
+		$('.label_ratings').html('-');
+		$('.img_postar').attr('src','');
+
+		$('#loading_modal').modal();
+
+		poster_path="";
+
+		$.ajax({
+			url:'/get_movie',
+			data:{'category':sessionStorage.getItem("def_category"),'rating':6,'skip_rows':skip_rows},
+			type:'post',
+			success:function(r){
+				$('#loading_modal').modal('hide');
+				// console.log(r);	
+				var tmp=$.parseJSON(r);
+				// console.log(tmp);
+				var gen_found=0,genres="";
+				for(var g in tmp.genres)
+				{
+					var tmp2=tmp.genres[g];					
+					for(var i=0;i<genre_arr.length;i++){
+						if(tmp2.indexOf(genre_arr[i])>0){
+							$('.label_genres').append('<span class="badge '+((gen_found%3==0)?'':(gen_found%2==0)?'even':'odd')+'">'+genre_arr[i]+'</span>&nbsp;&nbsp;');
+
+							if(genre_arr.indexOf(genre_arr[i])>=0){
+								genre_val[genre_arr.indexOf(genre_arr[i])]++;
+								rating_arr[genre_arr.indexOf(genre_arr[i])] +=last_rating;
+							}
+								
+							//genres += ((genres!="")?",":"")+genre_arr[i];
+							gen_found++;
+						}
+					}
+				}
+				//sessionStorage.setItem("def_category",genres);
+
+				for(var g in tmp.title)
+				{
+					$('.label_title').html(tmp.title[g]);
+				}
+				
+				for(var g in tmp.overview)
+				{
+					$('.label_overview').html(tmp.overview[g]);
+				}
+				for(var g in tmp.id)
+				{
+					skip_rows += ((skip_rows!="")?',':'')+tmp.id[g];
+				}
+				for(var g in tmp.imdb_id)
+				{
+					img_load_try=0;
+					$('.img_postar').attr('src','static/loading.gif');
+					load_image(tmp.imdb_id[g]);
+				}
+				for(var g in tmp.poster_path)
+				{
+					poster_path=tmp.poster_path[g];
+				}
+				
+				var runtime=0;
+				for(var g in tmp.runtime)
+				{
+					runtime=parseInt(tmp.runtime[g],10);
+					
+					if(runtime>0){
+						$('#div_runtime').removeClass('hide');
+						$('.label_runtime').html("0"+(runtime/60).toFixed(0)+":"+(runtime%60).toFixed(0)+":00");
+					}
+					else $('#div_runtime').addClass('hide');
+				}
+				for(var g in tmp.vote_average)
+				{
+					$('.label_ratings').html(tmp.vote_average[g]);
+				}
+				$('#movie_points').val(0);
+				$('.label_range').text('0');
+
+				// console.log(genres);
+				// console.log(title);
+				// console.log(overview);
+				// console.log(poster_path);
+				// console.log(runtime);
+				// console.log(vote_average);
+			},
+			error:function(e){
+				console.log(e);
+			}
+		});
+	}
+	function fn_submit_nchoice(){
+		var html="<div class='col-sm-3 block'>";
+		html +='<img src="'+$('img.img_postar').attr('src')+'">';
+		html +='<h4>'+$('.label_title').html()+'</h4>';
+		html +='<label>Overall Rating:&nbsp;&nbsp;<span class="btn btn-sm btn-success">'+$('.label_ratings').text()+'</span></label>';
+		html +='</div>';
+		$('#div_load_submitted_movie').append(html);
+		
+		if(submit_pick==4)
+		{
+			//recommend
+			$('#div_range_slider').addClass('hide');
+			$('.btn-reload').removeClass('hide');
+			$('.btn-submit').addClass('hide');
+
+			recommend_movie();
+			submit_pick=1;
+
+			skip_rows="0";
+		}
+		else{
+			last_rating=parseFloat($('#movie_points').val(),10);
+			// sessionStorage.setItem("usr_rating",last_rating);
+			submit_pick++;
+			
+			load_movie();
+
+			$('#div_range_slider').removeClass('hide');
+			$('.btn-reload').addClass('hide');
+			$('.btn-submit').removeClass('hide');
+		}
+	}
+	function recommend_movie(){
+		var mx=0,mr=6;
+		for(var i=0;i<genre_val.length;i++){
+			if(mx < genre_val[i]*rating_arr[i])
+				mx=genre_val[i];
+				
+			if(mr < rating_arr[i])
+				mr=rating_arr[i];
+		}
+		if(mr>0)
+			mr = mr%10;
+		
+		sessionStorage.setItem("def_category",genre_arr[mx]);
+		
+		$('.label_title').html('');
+		$('.label_genres').html('');
+		$('.label_overview').html('');
+		$('.label_runtime').html('-');
+		$('.label_ratings').html('-');
+		$('.img_postar').attr('src','');
+
+		$('#loading_modal').modal();
+		
+		$.ajax({
+			url:'/recommend_movie',
+			data:{'category':sessionStorage.getItem("def_category"),'rating':mr},
+			type:'post',
+			success:function(r){
+				$('#loading_modal').modal('hide');
+				// console.log(r);
+				var tmp=$.parseJSON(r);
+				// console.log(tmp);
+				$('header').find('span').html("<span class='even'>Recommended Movie</span>");
+				var gen_found=0;
+				for(var g in tmp.genres)
+				{
+					var tmp2=tmp.genres[g];					
+					for(var i=0;i<genre_arr.length;i++){
+						if(tmp2.indexOf(genre_arr[i])>0){
+							$('.label_genres').append('<span class="badge '+((gen_found%3==0)?'':(gen_found%2==0)?'even':'odd')+'">'+genre_arr[i]+'</span>&nbsp;&nbsp;');
+							gen_found++;
+						}
+					}
+				}
+
+				for(var g in tmp.title)
+				{
+					skip_rows += ((skip_rows!="")?',':'')+g;
+					$('.label_title').html(tmp.title[g]);
+				}
+				
+				for(var g in tmp.overview)
+				{
+					$('.label_overview').html(tmp.overview[g]);
+				}
+				for(var g in tmp.imdb_id)
+				{
+					img_load_try=0;
+					$('.img_postar').attr('src','static/loading.gif');
+					load_image(tmp.imdb_id[g]);
+				}
+				for(var g in tmp.poster_path)
+				{
+					poster_path=tmp.poster_path[g];
+				}
+				var runtime=0;
+				for(var g in tmp.runtime)
+				{
+					runtime=parseInt(tmp.runtime[g],10);
+					
+					if(runtime>0){
+						$('#div_runtime').removeClass('hide');
+						$('.label_runtime').html("0"+(runtime/60).toFixed(0)+":"+(runtime%60).toFixed(0)+":00");
+					}
+					else $('#div_runtime').addClass('hide');
+				}
+				for(var g in tmp.vote_average)
+				{
+					$('.label_ratings').html(tmp.vote_average[g]);
+				}
+				$('#movie_points').val(6);
+				// console.log(genres);
+				// console.log(title);
+				// console.log(overview);
+				// console.log(poster_path);
+				// console.log(runtime);
+				// console.log(vote_average);
+			},
+			error:function(e){
+				console.log(e);
+			}
+		});
+	}
+	function load_image(imdb_id)
+	{
+		if(img_load_try>4){ 
+          	$('.img_postar').attr('src',"static/reco.jpg");
+			return;
+		}
+
+		img_load_try++;
+
+		$.ajax({
+			url:'https://inkdesignlab.com/imdb_image/scrapper.php?imdb_id='+imdb_id,
+			success:function(s){
+				console.log(s);
+				if(s.length<20)
+					load_image(imdb_id);
+				if(s.length<250)
+					$('img.img_postar').attr('src',s);
+				else load_image(imdb_id);
+
+				if(img_load_try>4){ 
+					$('.img_postar').attr('src',"static/reco.jpg");
+					return;
+				}
+			},
+			error:function(e){console.log(e);}
+		});
+	}
+</script>
