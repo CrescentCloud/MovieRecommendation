@@ -1,7 +1,7 @@
-# MovieRecommendation
-Overview:
-Assignment done by Group 2 , course CSDA1040, 2021 York University; 
-We will give user 4 random movie option to get thier input about their choice of movie types. The Apps use predefined Algorythm uging Movie Actual Rating from IMDB, Genres and user input Rating. Based on their input the 'Movierecommender Application' will recommend them a movie.
+# MovieRecommendation<br><br>
+Overview:<br>
+Assignment done by Group 2 , course CSDA1040, 2021 York University; <br><br>
+We will give user 4 random movie option to get thier input about their choice of movie types. The Apps use predefined Algorythm uging Movie Actual Rating from IMDB, Genres and user input Rating. Based on their input the <strong>Movie Recommender</strong> Application will recommend them a movie.
 <br><br>
 Apps URL: https://movierecommend.uc.r.appspot.com
 <br><br>
