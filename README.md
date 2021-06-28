@@ -5,7 +5,7 @@ Contribution: Crescent Faruq, Krishna Shah, Leonard, Rohan Venkatesh!
 <br><br>
 We will give user 4 random movie option to get thier input about their choice of movie types. The Apps use predefined Algorythm uging Movie Actual Rating from IMDB, Genres and user input Rating. Based on their input the <strong>Movie Recommender</strong> Application will recommend them a movie.
 <br><br>
-Apps URL: https://movierecommend.uc.r.appspot.com
+Apps URL: https://movierecomm.ue.r.appspot.com
 <br><br>
 Plugin and Programming Language Used :<br>
 Language Python 3.9 ;<br>
